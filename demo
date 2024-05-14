@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout code from Git repository
-                git 'https://github.com/mleers/simple-node-website.git'
+                git 'https://github.com/surya-devopsaws/index.git'
             }
         }
         stage('Build') {
