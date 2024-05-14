@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout code from Git
+                    checkout([$class: 'GitSCM',
+                              branches: [[name: 'main']],
+                              userRemoteConfigs: [[url: '',
+                                                  credentialsId: '7e86d24d-ad15-482c-a6e0-afc97056007c']]]
+                    )
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                nodejs(cacheLocationStrategy: workspace(), nodeJSInstallationName: 'mypeppys') {
+                    // Your build steps go here
+                    // For example:
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+
+        stage('Deploy') {
+            steps {
+                // Deploy your application using sshPublisher
+                sshPublisher(publishers: [sshPublisherDesc(
+                    configName: 'mypeppys',
+                    transfers: [sshTransfer(
+                        cleanRemote: false,
+                        excludes: '',
+                        execCommand: '''cd /var/www/html/mypeppys.com/
+./pm2.sh''',
+                        flatten: false,
+                        makeEmptyDirs: false,
+                        noDefaultExcludes: false,
+                        patternSeparator: '[, ]+',
+                        remoteDirectory: '/',
+                        remoteDirectorySDF: false,
+                        removePrefix: '',
+                        sourceFiles: '.next/**, package.json, .env, next.config.js, package-lock.json, next-env.d.ts, .eslintrc.json, dbmgmt/**, tsconfig.json, public/**, src/**'
+                    )],
+                    usePromotionTimestamp: false,
+                    useWorkspaceInPromotion: false,
+                    verbose: false
+                )])
+            }
+        }
+    }
+}
