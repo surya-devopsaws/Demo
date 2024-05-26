@@ -1,25 +1,28 @@
-# This workflow will checkout your code and deploy it to a specific path
+name: My First GitHub Actions
 
-name: Checkout and Deploy
-#test
-
-on:
-  push: # Trigger the workflow on push events
+on: [push]
 
 jobs:
-  deploy:
-    runs-on: self-hosted # Define the runner OS
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
 
     steps:
-      - uses: actions/checkout@v3 # Checkout the code
-        with:
-          path: src
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies (if needed)
-        # Add your package manager specific commands here (e.g., npm install, yarn install)
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
 
-      - name: Copy code to deployment path
-        run: |
-          cp -r ./* /var/www/html/ # Copy all files to the deployment path
-
-      # Add additional deployment steps here (e.g., build commands)
+    - name: Run tests
+      run: |
+        cd src
+        python -m pytest addition.py
