@@ -1,19 +1,24 @@
-# Install Nginx on push
-name: Install Nginx
+# This workflow will checkout your code and deploy it to a specific path
+
+name: Checkout and Deploy
 
 on:
-  push:
-    branches: [ main ]  # Change "main" to your desired branch
+  push: # Trigger the workflow on push events
 
 jobs:
-  build:
-    runs-on: self-hosted
+  deploy:
+    runs-on: self-hosted # Define the runner OS
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v3 # Checkout the code
+        with:
+          path: src
 
-    - name: Update package lists
-      run: sudo apt-get update
+      - name: Install dependencies (if needed)
+        # Add your package manager specific commands here (e.g., npm install, yarn install)
 
-    - name: Install Nginx
-      run: sudo apt-get install -y nginx
+      - name: Copy code to deployment path
+        run: |
+          cp -r ./* /var/www/html/ # Copy all files to the deployment path
+
+      # Add additional deployment steps here (e.g., build commands)
