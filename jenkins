@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout code from Git
+                    // Checkout code 
                     checkout([$class: 'GitSCM',
                               branches: [[name: 'main']],
                               userRemoteConfigs: [[url: 'https://github.com/surya-devopsaws/qtree.git']]]
