@@ -11,7 +11,7 @@ pipeline {
 
     stages {
         stage('Trigger on Webhook') {
-            // This stage is implicit and triggered by webhook configured in Jenkins
+            // This stage is implicit and triggered by webhook configured in Jenk
             steps {
                 echo 'Triggered by webhook...'
             }
