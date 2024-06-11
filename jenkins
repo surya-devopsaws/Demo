@@ -1,1 +1,66 @@
 
+pipeline {
+    agent any
+
+    environment {
+        // Define environment variables
+        GIT_REPO = 'https://github.com/user/repo.git'
+        BRANCH = 'main'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                echo 'Cloning repository...'
+                // Clone the Git repository
+                git branch: "${BRANCH}", url: "${GIT_REPO}"
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building application...'
+                // Run the build
+                sh './gradlew build'  // Example using Gradle
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // Run the tests
+                sh './gradlew test'  // Example using Gradle
+            }
+        }
+
+        stage('Package') {
+            steps {
+                echo 'Packaging application...'
+                // Package the application
+                sh './gradlew assemble'  // Example using Gradle
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application...'
+                // Deploy the application (example for a web application)
+                sh 'scp build/libs/myapp.jar user@server:/path/to/deploy'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            // Clean up the workspace after the pipeline finishes
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
