@@ -19,7 +19,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building application...'
-                // Run the build
+                // Run the 
                 sh './gradlew build'  // Example using Gradle
             }
         }
