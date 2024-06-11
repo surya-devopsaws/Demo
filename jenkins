@@ -2,38 +2,49 @@ pipeline {
     agent any
 
     environment {
-        SECONDARY_GIT_REPO = 'https://github.com/mdn/beginner-html-site-styled.git'
-        BRANCH = 'gh-pages'
-        DEPLOY_PATH = '/home/ubuntu/'
-        SSH_USER = 'ubuntu'
-        SSH_HOST = '13.232.235.42'
+        // Define environment variables
+        GIT_REPO = 'https://github.com/user/repo.git'
+        BRANCH = 'main'
     }
 
     stages {
-        stage('Trigger on Webhook') {
-            // This stage is implicit and triggered by webhook configured in Jenk
+        stage('Clone Repository') {
             steps {
-                echo 'Triggered by webhook...'
+                echo 'Cloning repository...'
+                // Clone the Git repository
+                git branch: "${BRANCH}", url: "${GIT_REPO}"
             }
         }
 
-        stage('Fetch Code from Secondary Repository') {
+        stage('Build') {
             steps {
-                echo 'Fetching code from secondary repository...'
-                // Clone the secondary repository
-                dir('secondary_repo') {
-                    git branch: "${BRANCH}", url: "${SECONDARY_GIT_REPO}"
-                }
+                echo 'Building application...'
+                // Run the build
+                sh './gradlew build'  // Example using Gradle
             }
         }
 
-        stage('Deploy to EC2 Instance') {
+        stage('Test') {
             steps {
-                echo 'Deploying code to EC2 instance...'
-                // Transfer the cloned repository to the EC2 instance
-                sh """
-                scp -r secondary_repo ${SSH_USER}@${SSH_HOST}:${DEPLOY_PATH}
-                """
+                echo 'Running tests...'
+                // Run the tests
+                sh './gradlew test'  // Example using Gradle
+            }
+        }
+
+        stage('Package') {
+            steps {
+                echo 'Packaging application...'
+                // Package the application
+                sh './gradlew assemble'  // Example using Gradle
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application...'
+                // Deploy the application (example for a web application)
+                sh 'scp build/libs/myapp.jar user@server:/path/to/deploy'
             }
         }
     }
@@ -41,6 +52,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning up workspace...'
+            // Clean up the workspace after the pipeline finishes
             cleanWs()
         }
         success {
