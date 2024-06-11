@@ -27,7 +27,7 @@ pipeline {
                         makeEmptyDirs: false,
                         noDefaultExcludes: false,
                         patternSeparator: '[, ]+',
-                        remoteDirectory: '/', // Specify the correct remote directory
+                        remoteDirectory: '/home', // Specify the correct remote directory
                         remoteDirectorySDF: false,
                         removePrefix: '',
                         sourceFiles: '*/**'
