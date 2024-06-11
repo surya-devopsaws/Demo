@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SECONDARY_GIT_REPO = 'https://github.com/mdn/beginner-html-site-styled.git'
-        BRANCH = 'main'
+        BRANCH = 'gh-pages'
         DEPLOY_PATH = '/home/ubuntu/'
         SSH_USER = 'ubuntu'
         SSH_HOST = '13.232.235.42'
