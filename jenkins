@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // Define environment va
+        // Define environment 
         GIT_REPO = 'https://github.com/user/repo.git'
         BRANCH = 'main'
     }
