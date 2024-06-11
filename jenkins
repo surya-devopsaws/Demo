@@ -8,7 +8,7 @@ pipeline {
                     // Checkout code from Git
                     checkout([$class: 'GitSCM',
                               branches: [[name: 'main']],
-                              userRemoteConfigs: [[url: 'https://github.com/GTSConserve/pepys-next-js.git']]]
+                              userRemoteConfigs: [[url: 'https://github.com/surya-devopsaws/qtree.git']]]
                     )
                 }
             }
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 // Deploy your application using sshPublisher
                 sshPublisher(publishers: [sshPublisherDesc(
-                    configName: 'mypeppys',
+                    configName: 'demo',
                     transfers: [sshTransfer(
                         cleanRemote: false,
                         excludes: '',
