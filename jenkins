@@ -1,65 +1,42 @@
 pipeline {
     agent any
 
-    environment {
-        // Define environment 
-        GIT_REPO = 'https://b.com/user/repo.git'
-        BRANCH = 'main'
-    }
-
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
-                // Clone the Git repository
-                git branch: "${BRANCH}", url: "${GIT_REPO}"
-            }
-        }
-
-        stage('Build') {
-            steps {
-                echo 'Building application...'
-                // Run the 
-                sh './gradlew build'  // Example using Gradle
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                // Run the tests
-                sh './gradlew test'  // Example using Gradle
-            }
-        }
-
-        stage('Package') {
-            steps {
-                echo 'Packaging application...'
-                // Package the 
-                sh './gradlew assemble'  // Example using Gradle
+                script {
+                    // Checkout code from Git
+                    checkout([$class: 'GitSCM',
+                              branches: [[name: 'main']],
+                              userRemoteConfigs: [[url: 'https://github.com/GTSConserve/pepys-next-js.git']]]
+                    )
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
-                // Deploy the application (example for a web application)
-                sh 'scp build/libs/myapp.jar user@server:/path/to/deploy'
+                // Deploy your application using sshPublisher
+                sshPublisher(publishers: [sshPublisherDesc(
+                    configName: 'mypeppys',
+                    transfers: [sshTransfer(
+                        cleanRemote: false,
+                        excludes: '',
+                        execCommand: '''echo "Deployment script running"''', // Replace with actual deploy command
+                        flatten: false,
+                        makeEmptyDirs: false,
+                        noDefaultExcludes: false,
+                        patternSeparator: '[, ]+',
+                        remoteDirectory: '/', // Specify the correct remote directory
+                        remoteDirectorySDF: false,
+                        removePrefix: '',
+                        sourceFiles: '*/**'
+                    )],
+                    usePromotionTimestamp: false,
+                    useWorkspaceInPromotion: false,
+                    verbose: false
+                )])
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleaning up workspace...'
-            // Clean up the workspace after the pipeline finishes
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
