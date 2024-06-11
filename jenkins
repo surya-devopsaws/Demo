@@ -22,12 +22,12 @@ pipeline {
                     transfers: [sshTransfer(
                         cleanRemote: false,
                         excludes: '',
-                        execCommand: '''echo "Deployment script running"''', // Replace with actual deploy command
+                        execCommand:'', // Replace with actual deploy command
                         flatten: false,
                         makeEmptyDirs: false,
                         noDefaultExcludes: false,
                         patternSeparator: '[, ]+',
-                        remoteDirectory: '/home', // Specify the correct remote directory
+                        remoteDirectory: '/', // Specify the correct remote directory
                         remoteDirectorySDF: false,
                         removePrefix: '',
                         sourceFiles: '*/**'
